@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "902990727240",
+    "project_id": "hand-book-project",
+    "storage_bucket": "hand-book-project.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:902990727240:android:ea2d231ed68048b5d6307d",
+        "android_client_info": {
+          "package_name": "com.example.cmp_handbook"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBwQN58ZlOvr_P2uLCjQZwONMfDwzmcGzM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
