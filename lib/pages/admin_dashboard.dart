@@ -8,16 +8,16 @@ import 'package:toastification/toastification.dart';
 import '../api/api_services.dart';
 import './variables.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+class AdminDashboard extends StatefulWidget {
+  const AdminDashboard({super.key});
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  State<AdminDashboard> createState() => _AdminDashboardState();
 }
 
-class _HomePageState extends State<HomePage> {
-  ApiService apiService = ApiService();
+class _AdminDashboardState extends State<AdminDashboard> {
   String _fullName = '';
+  ApiService apiService = ApiService();
   late Widget centeredContent;
   late Widget button;
   late Widget loader;
@@ -26,14 +26,12 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     _loadUserData();
-    _initializeWidgets();
-    _updateHandbook();
-  }
 
-  void _initializeWidgets() {
+    // Initialize your widgets
     button = ElevatedButton(
-      onPressed: _loadAndReadHandbook,
+      onPressed: _updateHandbook,
       style: ElevatedButton.styleFrom(
+        minimumSize: const Size(200, 50),
         backgroundColor: colorGreen,
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
         shape: RoundedRectangleBorder(
@@ -41,13 +39,14 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
       child: const Text(
-        "Open Handbook",
+        "Update Handbook",
         style: TextStyle(color: Colors.white, fontSize: 16),
       ),
     );
 
-    loader = LinearProgressIndicator(color: colorGreen);
-    centeredContent = button;
+    loader = const CircularProgressIndicator(); // Initialize the loader widget
+
+    centeredContent = button; // Set initial content
   }
 
   Future<void> _loadUserData() async {
@@ -62,7 +61,9 @@ class _HomePageState extends State<HomePage> {
 
   void _logoutEvent() async {
     await apiService.logout();
-    mounted? Navigator.pushReplacementNamed(context, "auth"):null;
+    if (mounted) {
+      Navigator.pushReplacementNamed(context, "auth");
+    }
   }
 
   void _loadAndReadHandbook() {
@@ -73,8 +74,11 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> _updateHandbook() async {
+    mounted?ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text("Downloading handbook"))
+    ):null;
     setState(() {
-      centeredContent = loader;
+      centeredContent = loader; // Use loader widget when updating
     });
 
     try {
@@ -94,7 +98,7 @@ class _HomePageState extends State<HomePage> {
     } finally {
       if (mounted) {
         setState(() {
-          centeredContent = button;
+          centeredContent = button; // Reset to button after update
         });
       }
     }
@@ -106,8 +110,8 @@ class _HomePageState extends State<HomePage> {
       title: Text(message),
       autoCloseDuration: const Duration(seconds: 5),
       style: ToastificationStyle.fillColored,
-      backgroundColor: type == ToastificationType.success? colorGreen:Colors.amber,
-      primaryColor: type == ToastificationType.success? colorGreen:Colors.amber,
+      backgroundColor: type == ToastificationType.success ? colorGreen : Colors.amber,
+      primaryColor: type == ToastificationType.success ? colorGreen : Colors.amber,
       type: type,
       alignment: Alignment.bottomCenter,
     );
@@ -121,7 +125,7 @@ class _HomePageState extends State<HomePage> {
         appBar: AppBar(
           automaticallyImplyLeading: false,
           backgroundColor: colorGreen,
-          title: Text("Hello, $_fullName", style: const TextStyle(color: Colors.white, fontSize: 18)),
+          title: const Text("Welcome, ADMIN", style: TextStyle(color: Colors.white, fontSize: 18)),
           actions: [
             IconButton(
               onPressed: _showAboutDialog,
@@ -134,16 +138,87 @@ class _HomePageState extends State<HomePage> {
           height: double.infinity,
           decoration: BoxDecoration(
             image: const DecorationImage(
-                image: AssetImage('assets/nsuk2.png'),
-                fit: BoxFit.cover,
-                alignment: Alignment.centerRight,
-                opacity: 0.05
+              image: AssetImage('assets/nsuk2.png'),
+              fit: BoxFit.cover,
+              alignment: Alignment.centerRight,
+              opacity: 0.05,
             ),
             color: Colors.black.withOpacity(0.1),
           ),
           child: Column(
             children: [
-              Expanded(child: Center(child: centeredContent)),
+              Expanded(
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      ElevatedButton(
+                        onPressed: () => Navigator.of(context).pushNamed("uploadHandbook"),
+                        style: ElevatedButton.styleFrom(
+                          minimumSize: const Size(200, 50),
+                          backgroundColor: colorGreen,
+                          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                        child: const Text(
+                          "Upload handbook",
+                          style: TextStyle(color: Colors.white, fontSize: 16),
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      ElevatedButton(
+                        onPressed: _loadAndReadHandbook,
+                        style: ElevatedButton.styleFrom(
+                          minimumSize: const Size(200, 50),
+                          backgroundColor: colorGreen,
+                          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                        child: const Text(
+                          "View Handbook",
+                          style: TextStyle(color: Colors.white, fontSize: 16),
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      ElevatedButton(
+                        onPressed: () => Navigator.of(context).pushNamed("addStudent"),
+                        style: ElevatedButton.styleFrom(
+                          minimumSize: const Size(200, 50),
+                          backgroundColor: colorGreen,
+                          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                        child: const Text(
+                          "Add student(s)",
+                          style: TextStyle(color: Colors.white, fontSize: 16),
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      ElevatedButton(
+                        onPressed: () => Navigator.of(context).pushNamed("manageComplaints"),
+                        style: ElevatedButton.styleFrom(
+                          minimumSize: Size(200, 50),
+                          backgroundColor: colorGreen,
+                          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                        child: const Text(
+                          "Manage Complaints",
+                          style: TextStyle(color: Colors.white, fontSize: 16),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
               Container(
                 color: Colors.white,
                 padding: const EdgeInsets.all(8.0),
@@ -154,22 +229,14 @@ class _HomePageState extends State<HomePage> {
                       onPressed: _logoutEvent,
                       icon: Transform.flip(flipX: true, child: const Icon(Icons.logout_rounded, color: Colors.red)),
                     ),
-                    Expanded(
-                      child: TextButton(
-                        onPressed: () {
-                          Navigator.pushNamed(context, "complaints");
-                        },
-                        child: Text("Log Complaints", style: TextStyle(color: colorGreen, fontSize: 16)),
-                      ),
-                    ),
                     IconButton(
-                        onPressed: _updateHandbook,
-                        icon: Row(
-                          children: [
-                            Text("Update", style: TextStyle(color: colorGreen)),
-                            Icon(Icons.download, color: colorGreen),
-                          ],
-                        )
+                      onPressed: _updateHandbook,
+                      icon: Row(
+                        children: [
+                          Text("Update", style: TextStyle(color: colorGreen)),
+                          Icon(Icons.download, color: colorGreen),
+                        ],
+                      ),
                     ),
                   ],
                 ),
@@ -183,20 +250,23 @@ class _HomePageState extends State<HomePage> {
 
   void _showAboutDialog() async {
     String databaseLastUpdate = await storage.read(key: "databaseLastUpdate") ?? "Not available";
-    mounted ? showAboutDialog(
+    if (mounted) {
+      showAboutDialog(
         context: context,
         applicationIcon: Image.asset('assets/book.png'),
         applicationVersion: "1.1",
         applicationName: "CMP Handbook",
         children: [
           Text(
-              "Developed by: \nEvans SAMUEL\n\nFor:\nComputer Science department, NSUK.\n\nHandbook last updated on:\n $databaseLastUpdate",
-              style: TextStyle(color: colorGreen)
-          )
-        ]
-    ) :null;
+            "Developed by: \nEvans SAMUEL\n\nFor:\nComputer Science department, NSUK.\n\nHandbook last updated on:\n $databaseLastUpdate",
+            style: TextStyle(color: colorGreen),
+          ),
+        ],
+      );
+    }
   }
 }
+
 
 class PdfViewerPage extends StatefulWidget {
   const PdfViewerPage({super.key});
@@ -218,19 +288,13 @@ class _PdfViewerPageState extends State<PdfViewerPage> {
 
   Future<void> _loadPdfFromAssets() async {
     try {
-      // final ByteData bytes = await DefaultAssetBundle.of(context).load('assets/handbook.pdf');
-      // final Uint8List list = bytes.buffer.asUint8List();
-
       final tempDir = await getTemporaryDirectory();
       final file = File('${tempDir.path}/handbook.pdf');
-      // await file.writeAsBytes(list, flush: true);
-
       setState(() {
         localFilePath = file.path;
       });
     } catch (error) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Error loading PDF: $error")));
-      // print("Error loading PDF: $error");
+      mounted ? ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Error loading PDF: $error"))): null;
     }
   }
 
@@ -299,10 +363,13 @@ class _PdfViewerPageState extends State<PdfViewerPage> {
               setState(() {
                 totalPages = pages ?? 0;
               });
+              // print('PDF rendered with $pages pages');
             },
             onError: (error) {
+              // print('PDF error: ${error.toString()}');
             },
             onPageError: (page, error) {
+              // print('Error on page $page: ${error.toString()}');
             },
             onViewCreated: (controller){
               _controller = controller;
@@ -339,7 +406,7 @@ class _PdfViewerPageState extends State<PdfViewerPage> {
                       padding: EdgeInsets.zero,
                     ),
                     child: Container(
-                      alignment: Alignment.center,
+                        alignment: Alignment.center,
                         padding: const EdgeInsets.all(10),
                         decoration: const BoxDecoration(
                             color: Colors.white,
@@ -377,11 +444,11 @@ class _PdfViewerPageState extends State<PdfViewerPage> {
                       padding: EdgeInsets.zero,
                     ),
                     child: Container(
-                      alignment: Alignment.center,
-                      padding: const EdgeInsets.all(10),
+                        alignment: Alignment.center,
+                        padding: const EdgeInsets.all(10),
                         decoration: const BoxDecoration(
-                          color: Colors.white,
-                          shape: BoxShape.circle
+                            color: Colors.white,
+                            shape: BoxShape.circle
                         ),
                         child: const Icon(Icons.arrow_forward_ios)),
                   ),

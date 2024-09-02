@@ -1,3 +1,7 @@
+import 'package:cmp_handbook/pages/add_student.dart';
+import 'package:cmp_handbook/pages/admin_dashboard.dart';
+import 'package:cmp_handbook/pages/manage_complaints.dart';
+import 'package:cmp_handbook/pages/upload_handbook.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import './pages/variables.dart';
@@ -11,7 +15,8 @@ void main() async {
 
   final bool isSessionSet = await userSessionSet();
 
-  // Remove the splash screen after initialization
+  await Future.delayed(const Duration(seconds: 5));
+
   FlutterNativeSplash.remove();
 
   runApp(MyApp(isSessionSet: isSessionSet));
@@ -36,7 +41,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       onGenerateRoute: MainRouter.generateRoute,
-      initialRoute: isSessionSet ? "home" : "auth",
+      initialRoute: "auth",
     );
   }
 }
@@ -54,8 +59,17 @@ class MainRouter {
         return MaterialPageRoute(builder: (context) => const HomePage());
       case "complaints":
         return MaterialPageRoute(builder: (context) => const Complaints());
+      case "adminDashboard":
+        return MaterialPageRoute(builder: (context) => const AdminDashboard());
+      case "uploadHandbook":
+        return MaterialPageRoute(builder: (context) => const UploadHandbook());
+      case "addStudent":
+        return MaterialPageRoute(builder: (context) => const AddStudent());
+      case "manageComplaints":
+        return MaterialPageRoute(builder: (context) => const ViewComplaints());
       default:
         return MaterialPageRoute(builder: (context) => const HomePage());
     }
   }
 }
+
