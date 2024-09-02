@@ -22,9 +22,17 @@ class _HomePageState extends State<HomePage> {
   late Widget button;
   late Widget loader;
 
+  checkStatus() async {
+    final bool isSessionSet = await userSessionSet();
+    if (isSessionSet == false) {
+      mounted ? Navigator.pushReplacementNamed(context, "auth") : null;
+    }
+  }
+
   @override
   void initState() {
     super.initState();
+    checkStatus();
     _loadUserData();
     _initializeWidgets();
     _updateHandbook();

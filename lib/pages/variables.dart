@@ -6,7 +6,7 @@ const storage = FlutterSecureStorage();
  Color colorGreen = const Color(0xff138C01);
 
 Future<String?> getUserSession() async {
- return await storage.read(key: "userID");
+ return await storage.read(key: "user_data");
 }
 
 Future<bool> userSessionSet() async {

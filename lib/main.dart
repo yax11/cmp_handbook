@@ -23,7 +23,7 @@ void main() async {
 }
 
 Future<bool> userSessionSet() async {
-  String? session = await storage.read(key: "userID");
+  String? session = await storage.read(key: "user_data");
   return session != null && session.isNotEmpty;
 }
 
@@ -33,15 +33,18 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Set the initial route based on the session state
+    String initialRoute = isSessionSet ? "/" : "auth";
+
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'CMP HandBook',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.white),
         useMaterial3: true,
       ),
       onGenerateRoute: MainRouter.generateRoute,
-      initialRoute: "auth",
+      initialRoute: initialRoute,
     );
   }
 }
@@ -72,4 +75,3 @@ class MainRouter {
     }
   }
 }
-
